@@ -1,0 +1,47 @@
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
+#include "esp_err.h"
+
+#include "driver/gpio.h"
+
+
+void vATaskFunction( void * pvParams )
+{
+    TaskHandle_t xHandle;
+
+    ( void ) pvParams;
+
+    // Create a task, storing the handle.
+    xTaskCreate( vTaskCode, "NAME", STACK_SIZE, NULL, tskIDLE_PRIORITY, &xHandle );
+
+    // ...
+
+    // Use the handle to obtain the priority of the created task.
+    // It was created with tskIDLE_PRIORITY, but may have changed
+    // it itself.
+    if( uxTaskPriorityGet( xHandle ) != tskIDLE_PRIORITY )
+    {
+        // The task has changed its priority.
+    }
+
+    // ...
+
+    // Is our priority higher than the created task?
+    if( uxTaskPriorityGet( xHandle ) < uxTaskPriorityGet( NULL ) )
+    {
+        // Our priority (obtained using NULL handle) is higher.
+    }
+}
+
+
+vTaskNotifyGiveFromISR(
+    gpio_task_handle,
+    &higher_priority_task_woken
+);
+
+gpio_isr_handler_add(GPIO_NUM_4, button_isr, NULL);
+
+gpio_isr_handler_add(GPIO_NUM_5, sensor_isr, NULL);
+
+gpio_isr_handler_add(GPIO_NUM_18, encoder_isr, NULL);
