@@ -1,0 +1,49 @@
+
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
+void Increment_Every_2Sec (TimerHandle_t xtimer)
+{
+    printf("I Print every 2 Seconds\n");
+}
+
+void Increment_Every_5Sec (TimerHandle_t xtimer)
+{
+    printf("I Print every 5 Seconds\n");
+}
+void app_main(void)
+{        
+TimerHandle_t xTimers[2];
+         xTimers[0] = xTimerCreate
+                   ( /* Just a text name, not used by the RTOS kernel. */
+                     "Timer",
+                     /* The timer period in ticks, must be greater than 0. */
+                     pdMS_TO_TICKS(2000),
+                     /* The timers will auto-reload themselves when they expire. */
+                     pdTRUE,
+                     /* The ID is used to store a count of the number of times the
+                        timer has expired, which is initialised to 0. */
+                     ( void * ) 0,
+                     /* Each timer calls the same callback when it expires. */
+                     Increment_Every_2Sec
+                   );
+
+        xTimers[1] = xTimerCreate
+                   ( /* Just a text name, not used by the RTOS kernel. */
+                     "Timer",
+                     /* The timer period in ticks, must be greater than 0. */
+                     pdMS_TO_TICKS(5000),
+                     /* The timers will auto-reload themselves when they expire. */
+                     pdTRUE,
+                     /* The ID is used to store a count of the number of times the
+                        timer has expired, which is initialised to 0. */
+                     ( void * ) 0,
+                     /* Each timer calls the same callback when it expires. */
+                     Increment_Every_5Sec
+                   );
+
+        xTimerStart(xTimers[0], 0);
+        xTimerStart(xTimers[1], 0);
+
+
+}
